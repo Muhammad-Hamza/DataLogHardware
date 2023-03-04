@@ -47,7 +47,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
     implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
     implementation "androidx.multidex:multidex:2.0.1"
-    implementation 'com.github.datalogic:datalogic-android-sdk:1.12'
+    implementation 'com.github.datalogic:datalogic-android-sdk:1.32'
     implementation 'com.github.datalogic:datalogic-android-sdk-selfshopping:v1.8b'
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'

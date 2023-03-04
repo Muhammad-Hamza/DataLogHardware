@@ -1,6 +1,7 @@
 package com.example.myapplication.ui
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -10,6 +11,7 @@ import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -27,6 +29,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.datalogic.decode.BarcodeManager
 import com.datalogic.decode.DecodeException
 import com.datalogic.decode.ReadListener
+import com.datalogic.decode.Symbology
+import com.datalogic.decode.configuration.ScannerProperties
+import com.datalogic.decode.utils.GS1Parser
 import com.example.myapplication.Listeners
 import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivitySupplyProductBinding
@@ -111,6 +116,9 @@ class SupplyProductActivity : AppCompatActivity() {
 //            someActivityResultLauncher.launch(intent)
             makeEmptyFields()
         }
+
+
+
     }
 
     // You can do the assignment inside onAttach or onCreate, i.e, before the activity is displayed
@@ -152,7 +160,8 @@ class SupplyProductActivity : AppCompatActivity() {
         val productCode = etProductCode.text.toString()
         val expiry = etExpiry.text.toString()
         val batch = etBatchNo.text.toString()
-        val serialNumber =  Uri.encode(etSerialNumber.text.toString())
+        val sn = etSerialNumber.text.toString().replace("\n","")
+        val serialNumber =  Uri.encode(sn)
 
         mViewModel.postSupplyInfo(
             this,
@@ -274,13 +283,19 @@ class SupplyProductActivity : AppCompatActivity() {
     }
 
 
-    private fun parseGS1(resultData: String) {
+    private fun parseGS1(data: String) {
 
-        if (!TextUtils.isEmpty(resultData)) {
+
+        if (!TextUtils.isEmpty(data)) {
+
+
             try {
+                val resultData = data
                 Log.d("Supply", resultData!!.toString())
 
-                val splittedResult = resultData.split(resultData.toCharArray().get(0))
+                val jugar = "\u001D17270623011148208786902610000000\u001D2112q84MseGYwVGYbvD8hy"
+
+                val splittedResult = resultData.split(jugar.toCharArray().get(0))
 
                 var fieldList = mutableListOf<FieldsAI>()
                 for (s in splittedResult) {
@@ -308,11 +323,10 @@ class SupplyProductActivity : AppCompatActivity() {
 
 
 
-                    etProductCode.setText(productCode?.textBody)
+                etProductCode.setText(productCode?.textBody)
                 etSerialNumber.setText(serialNumber?.textBody)
                 etBatchNo.setText(batch?.textBody)
                 etExpiry.setText(expiry?.textBody)
-
 
                 Log.d("SUPPLY", productCode?.textBody.toString())
                 Log.d("SUPPLY", serialNumber?.textBody.toString())
@@ -509,7 +523,14 @@ class SupplyProductActivity : AppCompatActivity() {
         super.onResume()
         try {
             if (decoder == null) {
+
                 decoder = BarcodeManager()
+                var configuration = ScannerProperties.edit(decoder)
+                configuration.qrCode.enable.set(true)
+                configuration.store(decoder,true)
+                decoder?.enableAllSymbologies(true)
+
+
                 listener = ReadListener { decodeResult ->
                     Log.d("Barcode",decodeResult.text)
                     parseGS1(decodeResult.text)
@@ -519,6 +540,20 @@ class SupplyProductActivity : AppCompatActivity() {
 
         } catch (e : DecodeException) {
             e.printStackTrace()
+        }
+        hideSoftKeyboard(this)
+    }
+
+
+
+    /**
+     * Hides the soft keyboard
+     */
+    fun hideSoftKeyboard(context: Activity) {
+        if (context.currentFocus != null) {
+            val inputMethodManager =
+                context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(context.currentFocus!!.windowToken, 0)
         }
     }
 }

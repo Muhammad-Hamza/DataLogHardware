@@ -1,6 +1,7 @@
 package com.example.myapplication.ui
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -12,6 +13,7 @@ import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -26,6 +28,10 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import com.datalogic.decode.BarcodeManager
+import com.datalogic.decode.DecodeException
+import com.datalogic.decode.ReadListener
+import com.datalogic.decode.configuration.ScannerProperties
 import com.example.myapplication.Listeners
 import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityVerifyBinding
@@ -50,6 +56,8 @@ class VerifyActivity : AppCompatActivity()
     lateinit var etExpiry: EditText
     private val map = hashMapOf<String,String>()
     private lateinit var binding: ActivityVerifyBinding
+    private  var decoder:BarcodeManager? = null
+    private lateinit var listener: ReadListener
 
     private lateinit var mViewModel: ProductSupplyViewModel
 
@@ -205,13 +213,12 @@ class VerifyActivity : AppCompatActivity()
         val productCode = etProductCode.text.toString()
         val expiry = etExpiry.text.toString()
         val batch = etBatchNo.text.toString()
-        val serialNumber =  Uri.encode(etSerialNumber.text.toString())
-
+        val sn = etSerialNumber.text.toString().replace("\n","")
+        val serialNumber =  Uri.encode(sn)
         mViewModel.verifyPack(this, productCode, serialNumber, batch, expiry, object : ProductSupplyViewModel.onCompleteListener
         {
             override fun onDataFetch(model: SupplyModel, isError: Boolean)
-            { //                showMessage(model.information)
-//                makeEmptyFields()
+            {
 
                 val txtSupplied = findViewById<TextView>(R.id.txtSupplied)
                 val txtInfo = findViewById<TextView>(R.id.txtInfoValue)
@@ -492,4 +499,43 @@ class VerifyActivity : AppCompatActivity()
         map.put("11320800",amberColor)
         map.put("11320800",amberColor)
     }
+
+    override fun onResume() {
+        super.onResume()
+        try {
+            if (decoder == null) {
+
+                decoder = BarcodeManager()
+                var configuration = ScannerProperties.edit(decoder)
+                configuration.qrCode.enable.set(true)
+                configuration.store(decoder,true)
+                decoder?.enableAllSymbologies(true)
+
+
+                listener = ReadListener { decodeResult ->
+                    Log.d("Barcode",decodeResult.text)
+
+                    parseGS1(decodeResult.text)
+                }
+            }
+            decoder!!.addReadListener(listener)
+
+        } catch (e : DecodeException) {
+            e.printStackTrace()
+        }
+        hideSoftKeyboard(this)
+
+    }
+
+    /**
+     * Hides the soft keyboard
+     */
+    fun hideSoftKeyboard(context: Activity) {
+        if (context.currentFocus != null) {
+            val inputMethodManager =
+                context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(context.currentFocus!!.windowToken, 0)
+        }
+    }
+
 }
