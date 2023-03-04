@@ -164,9 +164,10 @@
                     android:layout_height="@dimen/_40sdp"
                     android:layout_marginStart="@dimen/_20sdp"
                     android:layout_marginEnd="@dimen/_5sdp"
-                    android:layout_weight="1"
+                    android:layout_weight="0.5"
                     android:background="#A2C1E5"
                     android:text="Scan pack"
+
                     android:textAllCaps="false"
                     android:textSize="@dimen/_18sdp" />
 

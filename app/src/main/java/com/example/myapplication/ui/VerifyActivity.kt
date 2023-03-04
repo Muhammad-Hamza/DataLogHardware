@@ -76,6 +76,7 @@ class VerifyActivity : AppCompatActivity()
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_verify)
 
+        binding.btnScanpak.visibility = View.INVISIBLE
         mViewModel = ViewModelProvider(this).get(ProductSupplyViewModel::class.java)
 
         mViewModel.attachErrorListener(object : Listeners.DialogInteractionListener
@@ -142,7 +143,11 @@ class VerifyActivity : AppCompatActivity()
             try {
                 Log.d("Supply", resultData!!.toString())
 
-                val splittedResult = resultData.split(resultData.toCharArray().get(0))
+                hideSoftKeyboard(this)
+
+                val jugar = "\u001D17270623011148208786902610000000\u001D2112q84MseGYwVGYbvD8hy"
+
+                val splittedResult = resultData.split(jugar.toCharArray().get(0))
 
                 var fieldList = mutableListOf<FieldsAI>()
                 for (s in splittedResult) {

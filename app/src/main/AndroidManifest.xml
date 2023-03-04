@@ -27,9 +27,11 @@
 
         <activity
             android:name=".ui.VerifyActivity"
+            android:windowSoftInputMode="stateHidden"
             android:exported="false" />
         <activity
             android:name=".ui.SupplyProductActivity"
+            android:windowSoftInputMode="stateHidden"
             android:exported="false" />
         <activity
             android:name=".ui.SupplyActivity"

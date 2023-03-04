@@ -70,6 +70,8 @@ class SupplyProductActivity : AppCompatActivity() {
         prepareForColors()
         binding = DataBindingUtil.setContentView(this, R.layout.activity_supply_product)
 
+        binding.btnScanpak.visibility = View.INVISIBLE
+
         mViewModel = ViewModelProvider(this).get(ProductSupplyViewModel::class.java)
 
         if (intent.hasExtra("FROM_FIX")) {
@@ -287,7 +289,7 @@ class SupplyProductActivity : AppCompatActivity() {
 
 
         if (!TextUtils.isEmpty(data)) {
-
+            hideSoftKeyboard(this)
 
             try {
                 val resultData = data
