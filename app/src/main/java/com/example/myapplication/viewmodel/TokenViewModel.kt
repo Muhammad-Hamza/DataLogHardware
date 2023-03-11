@@ -16,11 +16,11 @@ import retrofit2.Callback
 class TokenViewModel(application: Application) : AndroidViewModel(application) {
 
 
-    val CLIENT_CRED_TE ="rZFse0cCPCuQkkNy1Lpm09Gr"
-    val CLIENT_ID_TE ="MzkX7fY5QjMLRFgo33XLkpPf"
+//    val CLIENT_CRED_TE ="rZFse0cCPCuQkkNy1Lpm09Gr"
+//    val CLIENT_ID_TE ="MzkX7fY5QjMLRFgo33XLkpPf"
 //    val CLIENT_CRED_QA ="aa24dd48-bb7d-4fc9-b5a0-248b1bda0207"
-//    val CLIENT_ID_QA ="b6e49ab1-b04e-4f55-bbaf-270ad2b8ed8c"
-// val CLIENT_CRED_QA ="890dcd23-5e0c-45ba-8e71-d3de3ed47dc1"
+    val CLIENT_ID_QA ="bd902204-8a8f-4618-a6e9-2a995529f377"
+ val CLIENT_CRED_QA ="0b4531d4-9e7b-458c-94c4-c7ddcf79d87c"
 //    val CLIENT_ID_QA ="b803d3fc-4a86-4186-a43b-e82b6cfc9543"
 //    val CLIENT_SECRET_KEY_PROD = "845e7db2-5222-4b11-ad74-ac7930e99c8e"
 //    val CLIENT_ID_PROD = "cf0444d5-3308-4efe-8f3a-cd9e983d6d1c"
@@ -44,7 +44,7 @@ class TokenViewModel(application: Application) : AndroidViewModel(application) {
         mErrorListener.addDialog()
         val apiService = ApiClient.client(context).create(ApiInterface::class.java)
         Log.d(TAG, "===============LOGGING===============")
-        var call = apiService.getToken("client_credentials", CLIENT_ID_TE, CLIENT_CRED_TE)
+        var call = apiService.getToken("client_credentials", CLIENT_ID_QA, CLIENT_CRED_QA   )
 
         call?.enqueue(object : Callback<TokenResponse> {
             override fun onResponse(call: Call<TokenResponse>, response: Response<TokenResponse>) {

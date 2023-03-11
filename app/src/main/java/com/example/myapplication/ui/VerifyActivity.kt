@@ -215,11 +215,14 @@ class VerifyActivity : AppCompatActivity()
 
     private fun hitAPIRequest()
     {
-        val productCode = etProductCode.text.toString()
-        val expiry = etExpiry.text.toString()
-        val batch = etBatchNo.text.toString()
+        val productCode = etProductCode.text.toString().replace("\n","")
+        val expiry = etExpiry.text.toString().replace("\n","")
+        val batch = etBatchNo.text.toString().replace("\n","")
         val sn = etSerialNumber.text.toString().replace("\n","")
         val serialNumber =  Uri.encode(sn)
+        val bg = findViewById<LinearLayoutCompat>(R.id.llStatus)
+        bg.visibility = View.GONE
+
         mViewModel.verifyPack(this, productCode, serialNumber, batch, expiry, object : ProductSupplyViewModel.onCompleteListener
         {
             override fun onDataFetch(model: SupplyModel, isError: Boolean)

@@ -14,11 +14,10 @@ import com.example.myapplication.network.remote.SupplyModel
 import com.example.myapplication.util.Utils
 import com.example.myapplication.viewmodel.TokenViewModel
 import com.google.gson.Gson
-import com.google.gson.annotations.SerializedName
+import com.google.gson.JsonSyntaxException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.IOException
 
 class ProductSupplyViewModel(application: Application) : AndroidViewModel(application)
 {
@@ -68,10 +67,16 @@ class ProductSupplyViewModel(application: Application) : AndroidViewModel(applic
                 }
                 else
                 {
-                    if (response.errorBody() != null && response.code() != 400)
-                        mListener.onDataFetch(Gson().fromJson<SupplyModel>(response.errorBody()?.string(), SupplyModel::class.java),true)
-                    else
-                        Toast.makeText(context,"Wrong State. Please try again with correct Data",Toast.LENGTH_SHORT).show()
+                    try {
+                       val errorString  = response.errorBody()?.string()
+                        if (response.errorBody() != null && response.code() != 400 && !errorString.isNullOrEmpty())
+                            mListener.onDataFetch(Gson().fromJson<SupplyModel>(errorString, SupplyModel::class.java),true)
+                        else
+                            Toast.makeText(context,"Wrong State. Please try again with correct Data",Toast.LENGTH_SHORT).show()
+                    } catch (ex:JsonSyntaxException){
+
+                    }
+
                 }
                 mErrorListener.dismissDialog()
             }
@@ -106,14 +111,15 @@ class ProductSupplyViewModel(application: Application) : AndroidViewModel(applic
             {
                 Log.d(TAG, response.raw()
                         .toString())
-                if (response?.body() != null)
+                if (response.body() != null)
                 {
                     mListener.onDataFetch(response.body()!!,false)
                 }
                 else
                 {
-                    if (response.errorBody() != null && response.code() != 400)
-                        mListener.onDataFetch(Gson().fromJson<SupplyModel>(response.errorBody()?.string(), SupplyModel::class.java),true)
+                    val errorString  = response.errorBody()?.string()
+                    if (response.errorBody() != null && response.code() != 400 && !errorString.isNullOrEmpty())
+                        mListener.onDataFetch(Gson().fromJson<SupplyModel>(errorString, SupplyModel::class.java),true)
                 }
                 mErrorListener.dismissDialog()
             }
