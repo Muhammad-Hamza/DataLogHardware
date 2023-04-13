@@ -51,7 +51,7 @@ dependencies {
     implementation "androidx.multidex:multidex:2.0.1"
     implementation 'com.github.datalogic:datalogic-android-sdk:1.32'
     implementation 'com.github.datalogic:datalogic-android-sdk-selfshopping:v1.8b'
-    implementation 'com.android.support:multidex:1.0.3'
+//    implementation 'com.android.support:multidex:1.0.3'
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
     testImplementation 'junit:junit:4.13.2'

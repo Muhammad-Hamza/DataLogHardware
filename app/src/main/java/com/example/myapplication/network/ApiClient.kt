@@ -44,7 +44,7 @@ object ApiClient
 
     private fun getURL(): String
     {
-      return BASE_URL_QA
+      return BASE_URL_PROD
     }
 
 }
